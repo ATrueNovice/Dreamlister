@@ -7,13 +7,23 @@
 //
 
 import UIKit
+import CoreData
 
-class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+//FRC (Fetch Results Controller) Collects all info about the results and keep collection of data low. It also tells the controller’s fetch results have been changed due to an add, remove, move, or update operations. Essentially gets the results but, in batches to keep data requests low.
+
+class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate {
 
 
     //Outlets from the ViewController
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segment: UISegmentedControl!
+
+    //When working with FRC you must: 1) Have a variable for the FRC, 2) tell it what entity or data classes we will be working with (NSManagedObject)
+
+    //Dont forget the "!" to unwrap
+
+    var Controller: NSFetchedResultsController<Item>!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,19 +39,110 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     //Methods that will be used in the table view
 
+    //* FRC works with sections made up of rows. Instead of making an array, the FRC understands and sets the number of rows and information to return
+
+        //Puts the cell in a specific location
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return UITableViewCell()
     }
-
+    //Makes the number of rows in a section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 0
     }
 
+        //Returns the number of cells in the view.
     func numberOfSections(in tableView: UITableView) -> Int {
         return 0
-        
+
+    }
+
+        //Creates FetchRequest Variable, tells what will be fetched, and then telling to go fetch
+        //This will be pass
+
+    func attemptFetch() {
+
+        //the fetch request will be working with
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+
+
+        //Sorts data. The Key "Created" comes from the entity Created which will be our timestamp. Look at NSManagedObjects in xcDatamodled, the entity ITEM has an attribute called "created"
+
+        //How we sort
+        let dateSort = NSSortDescriptor(key: "created", ascending: false)
+
+        //fetch request expects an array.
+        fetchRequest.sortDescriptors = [dateSort]
+
+
+        //Instantiate the fetch request controller. Initializes it and passes in what will be in the fetch request.
+
+        //NSManagedObjectContext is in the persistent Container. This is the template of how things will come back. We have passed the information into it.
+        let controller  = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+
+
+        //Error Checking. Tries to fetch and will return error if fetch is unsuccessful.
+        //Remember this for future reference. 
+
+        do {
+            try controller.performFetch()
+
+        } catch {
+
+            let error = error as NSError
+            print ("\(error)")
+        }
+    }
+
+        //Whenever the table view will update, this will listen for changes and make them for you.
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+
+        //Inserts, deletes, update, or modifies tableview as we scroll.
+        tableView.beginUpdates()
+    }
+
+    //If the content has been updated and there is nothing more, end updates. Tableview.endupdates does this.
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
+
+    //Listens for changes (insert, delete, move, and update)
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+
+        //WHat happens when you create a new item. This is what happens when we save item
+        switch (type) {
+
+            //What happens for the Insert when inserting data into table view
+        case.insert:
+            if let indexPath = newIndexPath {
+
+                //When we insert a new item (inserted at the new index path) it will animate with a fade in.
+                tableView.insertRows(at: [indexPath], with: .fade)
+            }
+        break
+        case.delete:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .fade)
+            }
+            break
+        case.update:
+            if let indexPath = indexPath {
+                let cell = tableView.cellForRow(at: indexPath) as! ItemCell
+                //Update the cell data
+            }
+
+            break
+        case.move:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .fade)
+            }
+            if let indexPath = newIndexPath {
+                tableView.insertRows(at: [indexPath], with: .fade)
+            }
+            break
     }
 
 
 }
 
+}

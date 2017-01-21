@@ -91,3 +91,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+//ANnytime we need to access anything in the app delegate, all we would need to do is ad.saveContext
+
+let ad = UIApplication.shared.delegate as! AppDelegate
+
+//singleVariable for NS managed object
+let context = ad.persistentContainer.viewContext
+
+
+
+
+
+
