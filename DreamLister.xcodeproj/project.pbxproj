@@ -22,6 +22,7 @@
 		D52B8D7C1E31A9AB00644367 /* Item+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B8D741E31A9AB00644367 /* Item+CoreDataClass.swift */; };
 		D52B8D7D1E31A9AB00644367 /* Item+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B8D751E31A9AB00644367 /* Item+CoreDataProperties.swift */; };
 		D52B8D801E32D31F00644367 /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B8D7F1E32D31F00644367 /* MaterialView.swift */; };
+		D52B8D821E32E8AD00644367 /* ItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52B8D811E32E8AD00644367 /* ItemCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		D52B8D741E31A9AB00644367 /* Item+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D52B8D751E31A9AB00644367 /* Item+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D52B8D7F1E32D31F00644367 /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
+		D52B8D811E32E8AD00644367 /* ItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				D52B8D7F1E32D31F00644367 /* MaterialView.swift */,
+				D52B8D811E32E8AD00644367 /* ItemCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -191,6 +194,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D52B8D821E32E8AD00644367 /* ItemCell.swift in Sources */,
 				D52B8D7C1E31A9AB00644367 /* Item+CoreDataClass.swift in Sources */,
 				D52B8D7B1E31A9AB00644367 /* Image+CoreDataProperties.swift in Sources */,
 				D52B8D761E31A9AB00644367 /* ItemType+CoreDataClass.swift in Sources */,
