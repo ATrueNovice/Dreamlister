@@ -12,4 +12,14 @@ import CoreData
 
 public class Item: NSManagedObject {
 
+
+    //Any time an item is insterted (any item is created) this function will be called.
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+
+
+        //Whenever something is created, assign an attribute date.
+        self.created = NSDate()
+    }
+
 }
