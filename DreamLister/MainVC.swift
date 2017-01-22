@@ -23,7 +23,7 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
 
     //Dont forget the "!" to unwrap
 
-    var Controller: NSFetchedResultsController<Item>!
+    var controller: NSFetchedResultsController<Item>!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +33,11 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         tableView.delegate = self
         tableView.dataSource = self
 
+        //These functions must be here because it will be called as the view loads
+        generateTestData()
+        attemptFetch()
+
+
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -40,20 +45,57 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
     //Methods that will be used in the table view
 
     //* FRC works with sections made up of rows. Instead of making an array, the FRC understands and sets the number of rows and information to return
-
         //Puts the cell in a specific location
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+
+
+
+    // When we call "CellForRowAt" we create a cell, passing that into configure cell function, then passing it into the configure cell object inside the function that is handled in the ItemCell custom class
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        //configures the cell to update and be reusable
+        // In order to work, we had to set an Identifier. The itemcell gets the identifier "ItemCell"
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
+        configureCell(cell: cell, indexPath: indexPath as NSIndexPath)
+
+        return cell
+    }
+
+    func configureCell (cell: ItemCell, indexPath: NSIndexPath) {
+        //update cell and calls it from two locations
+
+        let item = controller.object(at: indexPath as IndexPath)
+        cell.configureCell(item: item)
+
+
+
+
     }
     //Makes the number of rows in a section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+        //If there if there are sections, grab info, count them and return the number of objects. If they aren't any, return zero
+        if let sections = controller.sections {
+            let sectionsInfo = sections[section]
+            return sectionsInfo.numberOfObjects
+        }
+
         return 0
     }
 
         //Returns the number of cells in the view.
     func numberOfSections(in tableView: UITableView) -> Int {
+        if let sections = controller.sections {
+            return sections.count
+        }
         return 0
 
+    }
+
+    //Makes sure the row height stays as it should.
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 150
     }
 
         //Creates FetchRequest Variable, tells what will be fetched, and then telling to go fetch
@@ -79,6 +121,8 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         //NSManagedObjectContext is in the persistent Container. This is the template of how things will come back. We have passed the information into it.
         let controller  = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 
+
+        self.controller = controller
 
         //Error Checking. Tries to fetch and will return error if fetch is unsuccessful.
         //Remember this for future reference. 
@@ -128,7 +172,9 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         case.update:
             if let indexPath = indexPath {
                 let cell = tableView.cellForRow(at: indexPath) as! ItemCell
-                //Update the cell data
+
+                //Whenever the cell updates, the new cell goes through the configureCell function
+                configureCell(cell: cell, indexPath: indexPath as NSIndexPath)
             }
 
             break
@@ -141,8 +187,28 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
             }
             break
     }
-
-
 }
+    //Inputs test data into the tableview
+    func generateTestData() {
+
+        let item = Item(context: context)
+        item.title = "Yacht"
+        item.price = 2000000
+        item.details = "I can't wait to own a Yacht! Sailing would be lit!"
+
+        let item2 = Item(context: context)
+        item2.title = "Porche Panaroma"
+        item2.price = 80000
+        item2.details = "I can't wait to own a Porche! Crusing on the FDR drive would be amazing!"
+
+        let item3 = Item(context: context)
+        item3.title = "Penthouse"
+        item3.price = 5000000
+        item3.details = "I can't wait to own a penthouse! Parties would be the dopest ever!!!"
+
+        // Allows users to save content offline
+        ad.saveContext()
+    }
+
 
 }
