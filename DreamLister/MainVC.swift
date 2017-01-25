@@ -34,15 +34,15 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         tableView.dataSource = self
 
         //These functions must be here because it will be called as the view loads
-        generateTestData()
+        generateTestData() //Data Comes First
         attemptFetch()
 
-
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
 
-    //Methods that will be used in the table view
+    //We Now Start the methods that will be used in the table view
+
+    //What we need: CellForRowAt(To start off)(variable to help with manage each row, method to configure the cell details, set the number of rows in section, return the number of sections, and row height
 
     //* FRC works with sections made up of rows. Instead of making an array, the FRC understands and sets the number of rows and information to return
         //Puts the cell in a specific location
@@ -54,13 +54,18 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         //configures the cell to update and be reusable
-        // In order to work, we had to set an Identifier. The itemcell gets the identifier "ItemCell"
-        
+        // In order to work, we had to set an Identifier. The itemcell gets the identifier "ItemCell". The ItemCell Identifier is linked to the ItemCell swift file with all the data that will be manipulated.
+
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
+
+        //Configures the cell based onto the specifications in the itemcell swift file.
         configureCell(cell: cell, indexPath: indexPath as NSIndexPath)
 
         return cell
     }
+
+        //Passes in the data from "Cell"  and manipulates it based on item Cell
 
     func configureCell (cell: ItemCell, indexPath: NSIndexPath) {
         //update cell and calls it from two locations
@@ -73,9 +78,11 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
 
     }
     //Makes the number of rows in a section
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         //If there if there are sections, grab info, count them and return the number of objects. If they aren't any, return zero
+
         if let sections = controller.sections {
             let sectionsInfo = sections[section]
             return sectionsInfo.numberOfObjects
@@ -84,7 +91,7 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         return 0
     }
 
-        //Returns the number of cells in the view.
+        //Returns the number of cells in the view based on the controller.
     func numberOfSections(in tableView: UITableView) -> Int {
         if let sections = controller.sections {
             return sections.count
@@ -99,7 +106,7 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
     }
 
         //Creates FetchRequest Variable, tells what will be fetched, and then telling to go fetch
-        //This will be pass
+        //Attempt fetch is used to get data workigng with the Nsmanagedobject. First set the fetch request, sort by data, pass the information to the controller, then a "do/try" to pull everything together
 
     func attemptFetch() {
 
@@ -137,6 +144,9 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         }
     }
 
+
+        //For Updating the cell
+    
         //Whenever the table view will update, this will listen for changes and make them for you.
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 
