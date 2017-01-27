@@ -128,6 +128,9 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         //NSManagedObjectContext is in the persistent Container. This is the template of how things will come back. We have passed the information into it.
         let controller  = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 
+        //Instructs the methods what to do to return and update list after information is entered.
+        controller.delegate = self
+
 
         self.controller = controller
 
@@ -201,23 +204,23 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
     //Inputs test data into the tableview
     func generateTestData() {
 
-        let item = Item(context: context)
-        item.title = "Yacht"
-        item.price = 2000000
-        item.details = "I can't wait to own a Yacht! Sailing would be lit!"
-
-        let item2 = Item(context: context)
-        item2.title = "Porche Panaroma"
-        item2.price = 80000
-        item2.details = "I can't wait to own a Porche! Crusing on the FDR drive would be amazing!"
-
-        let item3 = Item(context: context)
-        item3.title = "Penthouse"
-        item3.price = 5000000
-        item3.details = "I can't wait to own a penthouse! Parties would be the dopest ever!!!"
+//        let item = Item(context: context)
+//        item.title = "Yacht"
+//        item.price = 2000000
+//        item.details = "I can't wait to own a Yacht! Sailing would be lit!"
+//
+//        let item2 = Item(context: context)
+//        item2.title = "Porche Panaroma"
+//        item2.price = 80000
+//        item2.details = "I can't wait to own a Porche! Crusing on the FDR drive would be amazing!"
+//
+//        let item3 = Item(context: context)
+//        item3.title = "Penthouse"
+//        item3.price = 5000000
+//        item3.details = "I can't wait to own a penthouse! Parties would be the dopest ever!!!"
 
         // Allows users to save content offline
-        ad.saveContext()
+       // ad.saveContext()
     }
 
 

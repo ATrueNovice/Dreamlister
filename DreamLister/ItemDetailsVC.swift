@@ -35,23 +35,23 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
 
 
         //This code puts the store names in the array. But, when we add the Store(context: context) it puts the store names into core data to be used later offline.
-        let store  = Store(context: context)
-        store.name = "Best Buy"
-        let store2  = Store(context: context)
-        store2.name = "Tesla Dealership"
-        let store3  = Store(context: context)
-        store3.name = "Circuit City"
-        let store4  = Store(context: context)
-        store4.name = "Target"
-        let store5  = Store(context: context)
-        store5.name = "Amazon"
-        let store6  = Store(context: context)
-        store6.name = "Sears"
-        let store7  = Store(context: context)
-        store7.name = "Kmart"
-        let store8  = Store(context: context)
-        store8.name = "Ebay"
-
+//        let store  = Store(context: context)
+//        store.name = "Best Buy"
+//        let store2  = Store(context: context)
+//        store2.name = "Tesla Dealership"
+//        let store3  = Store(context: context)
+//        store3.name = "Circuit City"
+//        let store4  = Store(context: context)
+//        store4.name = "Target"
+//        let store5  = Store(context: context)
+//        store5.name = "Amazon"
+//        let store6  = Store(context: context)
+//        store6.name = "Sears"
+//        let store7  = Store(context: context)
+//        store7.name = "Kmart"
+//        let store8  = Store(context: context)
+//        store8.name = "Ebay"
+//
 //        ad.saveContext()
 
         //Calls the get stores function
@@ -105,6 +105,63 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
         }
         }
 
+        //We are going to put the details by inserting them in the NSManagedContent object. Then save it to database.
+    @IBAction func savePressed(_ sender: UIButton) {
+
+        //How we insert a object into a managed object context. We declear it as the entity as it self. Context is where the entities are stored.
+
+        //All other attributes are going to be inserted into Item because we call this entity. When we do, we can insert the predetermined information in there because they are coredata objects.
+        let item = Item(context: context)
+
+        //Next we in assign each attribute for the items
+        //Title price and details are attributes of the Item that we in the line above. Now we insert this new data into that entity
+
+        if let title = titleField.text {
+            item.title = title
+        }
+
+
+        //Turned to nsstring so that we can use ns attributes
+
+        if let price = priceField.text {
+            item.price = (price as NSString).doubleValue
+        }
+
+        if let details = detailsField.text {
+
+            item.details = details
+        }
+
+        //Store is already an entity. It is the array above. We have already put the information in the store. Now we are assigning a store via relationship of the item.
+
+
+        //In component address the columns. We only have one column and we want it to pull from there.
+        item.toStore = stores[storePicker.selectedRow(inComponent: 0)]
+            ad.saveContext()
+
+            //Dismisses view controller after button is pressed.
+        _ = navigationController?.popViewController(animated: true)
+
+
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
