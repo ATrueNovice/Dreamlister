@@ -72,11 +72,29 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
 
         let item = controller.object(at: indexPath as IndexPath)
         cell.configureCell(item: item)
-
-
-
-
     }
+
+    //Anytime someone clicks on one of the functions in table view, this fucntion is called. Then makes sure there is at least one object selected. Then set item equal to the specific item in the array (list) it performs a seque.
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        if let objs = controller.fetchedObjects , objs.count > 0 {
+            let item = objs[indexPath.row]
+            performSegue(withIdentifier: "ItemDetailsVC", sender: item)
+        }
+    }
+
+    //Creates a variable "destination" and setting it as the ItemDetailsVC, assigning it to the segue via the identifiier, casting item as Item (entity), then when in the ItemDetailsVC setting it to the itemToEdit variable so that information can be passed between screens. 
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ItemDetailsVC" {
+            if let destination = segue.destination as? ItemDetailsVC {
+                if let item = sender as? Item {
+                    destination.itemToEdit = item
+                }
+            }
+        }
+    }
+
     //Makes the number of rows in a section
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

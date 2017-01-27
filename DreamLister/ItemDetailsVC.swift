@@ -20,6 +20,7 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
 
     //Will hold the array of stores
     var stores = [Store]()
+    var itemToEdit: Item? //Question mark makes it an optional. This variable will hold the data that we will edit
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +57,12 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
 
         //Calls the get stores function
         getStores()
+
+
+        //if we have passed in an existing item's data we are going to load that in the main view
+        if itemToEdit != nil {
+            loadItemData()
+        }
 
 
 
@@ -110,8 +117,15 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
 
         //How we insert a object into a managed object context. We declear it as the entity as it self. Context is where the entities are stored.
 
-        //All other attributes are going to be inserted into Item because we call this entity. When we do, we can insert the predetermined information in there because they are coredata objects.
-        let item = Item(context: context)
+        //Make sure that we update the existing cell instead of adding a new one. 
+        var item: Item!
+
+            if itemToEdit == nil {
+                item = Item(context: context)
+            }else {
+                item = itemToEdit
+            }
+
 
         //Next we in assign each attribute for the items
         //Title price and details are attributes of the Item that we in the line above. Now we insert this new data into that entity
@@ -144,6 +158,35 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
 
 
     }
+
+    //When we pass an item, we load it into the view 
+    func loadItemData() {
+
+        if let item = itemToEdit{
+
+            titleField.text = item.title
+            priceField.text = "\(item.price)"
+            detailsField.text = item.details
+
+            if let store = item.toStore {
+                var index = 0
+                repeat {
+
+                    let s = stores[index]
+                    if s.name == store.name {
+                        storePicker.selectRow(index, inComponent: 0, animated: false)
+
+                        break
+                    }
+                    index += 1
+
+                }while (index < stores.count)
+            }
+        }
+
+    }
+
+
 }
 
 
