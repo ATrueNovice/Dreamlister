@@ -11,27 +11,35 @@ import CoreData
 
 //REmember to import the UI Protocols. In this case it is UI Pickerview Source and Delegateretret
 
-class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var storePicker: UIPickerView!
     @IBOutlet weak var titleField: CustomTextField!
     @IBOutlet weak var priceField: CustomTextField!
     @IBOutlet weak var detailsField: CustomTextField!
+    @IBOutlet weak var thumbImg: UIImageView!
+
 
     //Will hold the array of stores
     var stores = [Store]()
     var itemToEdit: Item? //Question mark makes it an optional. This variable will hold the data that we will edit
+    var imagePicker: UIImagePickerController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        storePicker.delegate = self
-        storePicker.dataSource = self
 
         //removes the DreamLister name from the navigation bar
         if let topItem = self.navigationController?.navigationBar.topItem {
             topItem.backBarButtonItem = UIBarButtonItem (title: "", style: UIBarButtonItemStyle.plain, target: nil, action: nil)
         }
+
+
+            storePicker.delegate = self
+            storePicker.dataSource = self
+
+            imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+
 
 
 
@@ -120,12 +128,21 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
         //Make sure that we update the existing cell instead of adding a new one. 
         var item: Item!
 
+        //Created an image entity called picture and assigned the image attributes from the image in the camera roll.
+
+        let picture = Image(context: context)
+        picture.image = thumbImg.image
+
+
+
+
             if itemToEdit == nil {
                 item = Item(context: context)
             }else {
                 item = itemToEdit
             }
 
+                item.toImage = picture
 
         //Next we in assign each attribute for the items
         //Title price and details are attributes of the Item that we in the line above. Now we insert this new data into that entity
@@ -161,12 +178,16 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
 
     //When we pass an item, we load it into the view 
     func loadItemData() {
-
         if let item = itemToEdit{
 
             titleField.text = item.title
             priceField.text = "\(item.price)"
             detailsField.text = item.details
+
+            //Inserted late
+            //Binds on load for image.
+            thumbImg.image = item.toImage?.image as? UIImage
+
 
             if let store = item.toStore {
                 var index = 0
@@ -186,6 +207,37 @@ class ItemDetailsVC: UIViewController, UIPickerViewDataSource, UIPickerViewDeleg
 
     }
 
+
+    //Delete an item.
+    @IBAction func deletePressed(_ sender: UIBarButtonItem) {
+
+        if itemToEdit != nil {
+            context.delete(itemToEdit!)
+            ad.saveContext()
+        }
+        _ = navigationController?.popViewController(animated: true)
+
+    }
+
+
+
+    //Camera Roll
+    //Detail what this does
+
+    @IBAction func addImage(_ sender: UIButton) {
+
+        present(imagePicker, animated: true, completion: nil)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]){
+
+    if let img = info[UIImagePickerControllerOriginalImage] as? UIImage
+        {
+            thumbImg.image = img
+    }
+
+        imagePicker.dismiss(animated: true, completion: nil)
+    }
 
 }
 
